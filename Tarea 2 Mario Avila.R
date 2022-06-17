@@ -6,7 +6,7 @@ CEOSAL1 <- read_dta("D:/Stata/Wooldridge Data old/CEOSAL1.dta")
 View(CEOSAL1)
 Roesq<-(CEOSAL1$roe^2)
 Regceosal1<-(lm(CEOSAL1$lsalary~CEOSAL1$lsales+CEOSAL1$roe+Roesq))
-stargazer::stargazer(Regceosal1, type="text", style = "all", digits = 5)
+stargazer::stargazer(Regceosal1, type="latex", style = "all", digits = 5)
 #No, su valor t (-0.3) es muy bajo, esto demuestra que el impacto de esta
 #Variable, ademas tampoco tiene un gran impacto en la pendiente.
 
@@ -18,7 +18,7 @@ stargazer::stargazer(Regceosal1, type="text", style = "all", digits = 5)
 #i. No, pues para apreciar el efecto total del alcohol en ColGPA attend no debe ser incluida
 #Pero, si es incluida, el coeficiente del alcohol se interpreta como el efecto que tiene en COLGPA el alcohol pero 
 #Que no son causa de no asistir a clase
-#ii. Si, pues estas variables serian buenas como variables control, pues pueden ayudar a medir las abilidades de los estudiantes
+#ii. Si, pues estas variables serian buenas como variables control, pues pueden ayudar a medir las habilidades de los estudiantes
 
 #Ejercicios de computadora
 
@@ -65,10 +65,16 @@ stargazer::stargazer(Regnetiv, type = "text", style = "all" )
 #El efecto parcial comenzando en 25 años es -0.044, su valor t es aprox -0.134, su valor p es aprox 0.894. Comprobamos que es estadísticamente insignificante 
 
 #v.
-RegnetV<-lm(Size1$nettfa~Size1$inc+Agem25)
+RegnetV<-lm(nettfa~inc+I((age-25)^2), data = Size1)
 stargazer::stargazer(RegnetV, type = "text", style = "all")
 #La bondad de ajuste es un casi la misma, aunque un poco mayor, lo importante es que al quitar age por su valor t pequeño el modelo se interpreta mejor
 
 #vi. 
+library(effects)
+plot(effect("age", RegnetV))
+#En el gráfico se aprecia como la pendiente entre los activos finales netos totales y la edad va creciendo, además se aprecia que la pendiente en 25 es 0
 
-  
+#vii. 
+RegnetVI<-lm(nettfa~inc+I((age-25)^2)+I((inc)^2), data = Size1)
+stargazer::stargazer(RegnetVI, type = "text", style = "all", digits = 5)
+#No es necesario, o no lo parece.
